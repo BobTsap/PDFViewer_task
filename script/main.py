@@ -64,14 +64,16 @@ class PDFViewer(QMainWindow):
 
     def select_pdf(self):
         file_dialog = QFileDialog()
-        file_path, _ = file_dialog.getOpenFileName(self, "Select PDF", "", "PDF Files (*.pdf)")
+        file_path, _ = file_dialog.getOpenFileName(
+            self, "Select PDF", "", "PDF Files (*.pdf)")
         if file_path:
             self.pdf_document = fitz.open(file_path)
             self.show_page()
 
     def show_page(self):
         if self.pdf_document:
-            pixmap = self.pdf_document[self.current_page].get_pixmap(matrix=fitz.Matrix(2, 2))
+            pixmap = self.pdf_document[self.current_page].get_pixmap(
+                matrix=fitz.Matrix(2, 2))
             pixmap.save('temp.png', 'PNG')
             pixmap = QPixmap('temp.png')
             self.label.setPixmap(pixmap)
@@ -82,7 +84,8 @@ class PDFViewer(QMainWindow):
             painter.setPen(pen)
             for rect in self.rectangles.get(self.current_page, []):
                 start, end = rect
-                painter.drawRect(start.x(), start.y(), end.x() - start.x(), end.y() - start.y())
+                painter.drawRect(start.x(), start.y(), end.x() -
+                                 start.x(), end.y() - start.y())
             painter.end()
 
             self.label.setPixmap(pixmap)
@@ -116,18 +119,22 @@ class PDFViewer(QMainWindow):
             pen = QPen(Qt.red)
             pen.setWidth(2)
             painter.setPen(pen)
-            
+
             start = self.start_pos
             end = self.end_pos
 
-            start = start - self.scroll_area.pos() - self.label.pos() + QPoint(0, self.scroll_area.verticalScrollBar().value())
-            end = end - self.scroll_area.pos() - self.label.pos() + QPoint(0, self.scroll_area.verticalScrollBar().value())
+            start = start - self.scroll_area.pos() - self.label.pos() + \
+                QPoint(0, self.scroll_area.verticalScrollBar().value())
+            end = end - self.scroll_area.pos() - self.label.pos() + \
+                QPoint(0, self.scroll_area.verticalScrollBar().value())
 
-            painter.drawRect(start.x(), start.y(), end.x() - start.x(), end.y() - start.y())
+            painter.drawRect(start.x(), start.y(), end.x() -
+                             start.x(), end.y() - start.y())
             painter.end()
 
-            self.rectangles.setdefault(self.current_page, []).append((start, end))
-            self.label.setPixmap(pixmap) 
+            self.rectangles.setdefault(
+                self.current_page, []).append((start, end))
+            self.label.setPixmap(pixmap)
             self.drawing = False
 
 
